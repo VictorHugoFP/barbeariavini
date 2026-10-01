@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Barbearia — Registro Rápido</title>
+
+    <!-- Tailwind via CDN: tudo continua em um único arquivo HTML -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        app: {
+                            950: '#030303',
+                            900: '#070707',
+                            850: '#101010',
+                            800: '#171717',
+                            750: '#202020'
+                        },
+                        brand: {
+                            blue: '#1683FF',
+                            green: '#18C77A',
+                            purple: '#7C3AED',
+                            amber: '#F59E0B'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        * {
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html {
+            background: #030303;
+        }
+
+        body {
+            background: #030303;
+            color: #fff;
+        }
+
+        ::-webkit-scrollbar {
+            width: 7px;
+            height: 7px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #070707;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #2a2a2a;
+            border-radius: 999px;
+        }
+
+        .service-card {
+            transition: transform .14s ease, filter .14s ease, box-shadow .14s ease;
+            border: 1px solid rgba(255, 255, 255, .10);
+        }
+
+        .service-card:hover {
+            filter: brightness(1.06);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, .30);
+        }
+
+        .service-card:active {
+            transform: scale(.965);
+            filter: brightness(.94);
+        }
+
+        .icon-wrap {
+            width: 48px;
+            height: 48px;
+            display: grid;
+            place-items: center;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, .16);
+            border: 1px solid rgba(255, 255, 255, .16);
+        }
+
+        .icon {
+            width: 30px;
+            height: 30px;
+            stroke: currentColor;
+            stroke-width: 2.1;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            fill: none;
+        }
+
+        .brand-mark {
+            width: 70px;
+            height: 58px;
+            color: #fff;
+        }
+
+        .brand-mark * {
+            stroke: currentColor;
+            stroke-width: 2.3;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            fill: none;
+        }
+
+        .toast {
+            animation: toastIn .22s ease-out, toastOut .25s ease-in 1.9s forwards;
+        }
+
+        @keyframes toastIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes toastOut {
+            from {
+                opacity: 1;
+            }
+
+            to {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+        }
+
+        .modal-bg {
+            animation: fadeIn .15s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .modal-box {
+            animation: modalIn .18s ease-out;
+        }
+
+        @keyframes modalIn {
+            from {
+                opacity: 0;
+                transform: scale(.97) translateY(5px);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body class="min-h-screen text-white antialiased">
+    <div id="app" class="min-h-screen">
+
+        <!-- APP -->
+        <main class="mx-auto min-h-screen w-full max-w-md bg-app-900 shadow-2xl">
+
+            <!-- HEADER / FRENTE -->
+            <header class="px-4 pt-5 pb-3 text-center">
+                <div class="mx-auto flex max-w-[330px] flex-col items-center">
+                    <img class="rounded-full w-40" src="./img/logo.png" alt="">
+                    <h1 class="text-[29px] font-black tracking-tight leading-none">BARBEARIA</h1>
+                    <div
+                        class="mt-1 flex items-center gap-2 text-[9px] font-bold uppercase tracking-[.25em] text-slate-400">
+                        <span class="h-px w-7 bg-slate-600"></span>
+                        REGISTRO RÁPIDO
+                        <span class="h-px w-7 bg-slate-600"></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- HOME -->
+            <section id="homeView" class="px-4 pb-28">
+                <div class="mx-auto max-w-[330px]">
+                    <div class="grid grid-cols-2 gap-2.5">
+                        <button onclick="registerById('corte')"
+                            class="service-card flex h-[118px] flex-col items-center justify-center rounded-2xl bg-brand-blue p-2 text-center shadow-lg">
+                            <img class="w-10" src="./img/1.png" alt="">
+                            <span class="mt-2 text-sm font-extrabold">Corte</span>
+                            <span id="frontPriceCorte" class="mt-0.5 text-[11px] font-bold">R$ 20,00</span>
+                        </button>
+
+                        <button onclick="registerById('barba')"
+                            class="service-card flex h-[118px] flex-col items-center justify-center rounded-2xl bg-brand-green p-2 text-center shadow-lg">
+                            <img class="w-10" src="./img/2.png" alt="">
+                            <span class="mt-2 text-sm font-extrabold">Barba</span>
+                            <span id="frontPriceBarba" class="mt-0.5 text-[11px] font-bold">R$ 15,00</span>
+                        </button>
+
+                        <button onclick="registerById('corteBarba')"
+                            class="service-card flex h-[118px] flex-col items-center justify-center rounded-2xl bg-brand-purple p-2 text-center shadow-lg">
+                            <img class="w-10" src="./img/4.png" alt="">
+                            <span class="mt-2 text-sm font-extrabold">Corte + Barba</span>
+                            <span id="frontPriceCorteBarba" class="mt-0.5 text-[11px] font-bold">R$ 30,00</span>
+                        </button>
+
+                        <button onclick="registerById('sobrancelha')"
+                            class="service-card flex h-[118px] flex-col items-center justify-center rounded-2xl bg-brand-amber p-2 text-center shadow-lg">
+                            <img class="w-10" src="./img/3.png" alt="">
+                            <span class="mt-2 text-sm font-extrabold">Sobrancelha</span>
+                            <span id="frontPriceSobrancelha" class="mt-0.5 text-[11px] font-bold">R$ 10,00</span>
+                        </button>
+                    </div>
+
+                    <button onclick="openCustomModal()"
+                        class="mt-2.5 flex h-[54px] w-full items-center justify-center gap-2 rounded-2xl bg-app-800 text-xs font-bold text-slate-200 shadow-lg transition hover:bg-slate-800 active:scale-[.99]">
+                        <span class="grid h-8 w-8 place-items-center rounded-lg bg-white/10 text-white">
+                            <i data-lucide="receipt-text" class="h-5 w-5" aria-hidden="true"></i>
+                        </span>
+                        <span>Outros / Personalizado</span>
+                    </button>
+
+                    <!-- FUNÇÕES ABAIXO DA FRENTE -->
+                    <div class="mt-8">
+                        <div class="mb-3">
+                            <h2 class="text-base font-bold">Controle financeiro</h2>
+                            <p class="text-[11px] text-slate-500">Resumo e ferramentas do barbeiro</p>
+                        </div>
+
+                        <div class="rounded-2xl border border-white/10 bg-app-850 p-4 shadow-lg">
+                            <div class="flex items-end justify-between gap-3">
+                                <div>
+                                    <p class="text-[10px] font-semibold uppercase tracking-wider text-slate-500">
+                                        Total de hoje</p>
+                                    <p id="todayTotal" class="mt-1 text-3xl font-black tracking-tight">R$ 0,00</p>
+                                </div>
+
+                                <div class="rounded-xl bg-brand-blue/15 px-3 py-2 text-right">
+                                    <p class="text-[9px] uppercase tracking-wider text-brand-blue">Atendimentos</p>
+                                    <p id="todayCount" class="text-lg font-extrabold text-brand-blue">0</p>
+                                </div>
+                            </div>
+
+                            <div class="mt-3 h-1.5 overflow-hidden rounded-full bg-slate-800">
+                                <div id="progressBar" class="h-full rounded-full bg-brand-blue transition-all"
+                                    style="width:0%"></div>
+                            </div>
+
+                            <p id="goalLabel" class="mt-2 text-[10px] text-slate-500">Meta diária: R$ 300,00</p>
+                        </div>
+
+                        <div class="mt-2 grid grid-cols-3 gap-2">
+                            <div class="rounded-2xl bg-app-850 p-3">
+                                <p class="text-[9px] uppercase tracking-wider text-slate-500">Cortes</p>
+                                <p id="statCuts" class="mt-1 text-lg font-extrabold">0</p>
+                            </div>
+
+                            <div class="rounded-2xl bg-app-850 p-3">
+                                <p class="text-[9px] uppercase tracking-wider text-slate-500">Ticket médio</p>
+                                <p id="statAverage" class="mt-1 text-sm font-extrabold">R$ 0</p>
+                            </div>
+
+                            <div class="rounded-2xl bg-app-850 p-3">
+                                <p class="text-[9px] uppercase tracking-wider text-slate-500">Meta</p>
+                                <p id="statGoal" class="mt-1 text-lg font-extrabold">0%</p>
+                            </div>
+                        </div>
+
+                        <div class="mt-3 grid grid-cols-2 gap-2">
+                            <button onclick="showView('history')"
+                                class="rounded-2xl bg-app-850 px-4 py-4 text-left transition hover:bg-app-800">
+                                <i data-lucide="chart-no-axes-column" class="h-5 w-5" aria-hidden="true"></i>
+                                <span class="mt-2 block text-sm font-bold">Histórico</span>
+                                <span class="text-[10px] text-slate-500">Ver atendimentos</span>
+                            </button>
+
+                            <button onclick="showView('report')"
+                                class="rounded-2xl bg-app-850 px-4 py-4 text-left transition hover:bg-app-800">
+                                <svg class="icon !h-5 !w-5" viewBox="0 0 24 24">
+                                    <path d="M5 20V10M12 20V4M19 20v-7"></path>
+                                </svg>
+                                <span class="mt-2 block text-sm font-bold">Resumo</span>
+                                <span class="text-[10px] text-slate-500">Visão financeira</span>
+                            </button>
+                        </div>
+
+                        <button onclick="openSettings()"
+                            class="mt-2 flex w-full items-center gap-3 rounded-2xl bg-app-850 px-4 py-4 text-left transition hover:bg-app-800">
+                            <svg class="icon !h-5 !w-5" viewBox="0 0 24 24">
+                                <circle cx="12" cy="12" r="3"></circle>
+                                <path
+                                    d="M19 15a2 2 0 0 0 .4 2.2l.1.1-1.8 1.8-.1-.1a2 2 0 0 0-2.2-.4 2 2 0 0 0-1.2 1.8V20h-2.6v-.1a2 2 0 0 0-1.2-1.8 2 2 0 0 0-2.2.4l-.1.1-1.8-1.8.1-.1A2 2 0 0 0 6.8 15 2 2 0 0 0 5 13.8H4v-2.6h.1A2 2 0 0 0 6 10a2 2 0 0 0-.4-2.2l-.1-.1 1.8-1.8.1.1A2 2 0 0 0 9.6 6 2 2 0 0 0 10.8 4.2V4h2.6v.2A2 2 0 0 0 14.6 6a2 2 0 0 0 2.2-.4l.1-.1 1.8 1.8-.1.1A2 2 0 0 0 18.2 10a2 2 0 0 0 1.8 1.2h.1v2.6H20a2 2 0 0 0-1 .3Z">
+                                </path>
+                            </svg>
+                            <div>
+                                <p class="text-sm font-bold">Configurações</p>
+                                <p class="text-[10px] text-slate-500">Preços e meta diária</p>
+                            </div>
+                            <span class="ml-auto text-slate-600">›</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- HISTORY -->
+            <section id="historyView" class="hidden px-4 pb-28">
+                <div class="mb-4 flex items-center justify-between">
+                    <div>
+                        <h2 class="text-xl font-bold">Histórico de hoje</h2>
+                        <p class="text-xs text-slate-500">Tudo que foi registrado hoje.</p>
+                    </div>
+
+                    <button onclick="clearToday()"
+                        class="rounded-xl bg-red-500/10 px-3 py-2 text-xs font-bold text-red-400 hover:bg-red-500/20">
+                        Limpar
+                    </button>
+                </div>
+
+                <div id="historyList" class="space-y-2"></div>
+
+                <div class="mt-4 rounded-2xl bg-app-850 p-4">
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-slate-400">Total do dia</span>
+                        <strong id="historyTotal" class="text-xl">R$ 0,00</strong>
+                    </div>
+                </div>
+            </section>
+
+            <!-- REPORT -->
+            <section id="reportView" class="hidden px-4 pb-28">
+                <div class="mb-4">
+                    <div class="flex items-start justify-between gap-3">
+                        <div>
+                            <h2 class="text-xl font-black">Resumo mensal</h2>
+                            <p id="reportMonthLabel" class="mt-1 text-xs font-semibold text-slate-400">Outubro de 2026
+                            </p>
+                        </div>
+                        <div class="grid h-10 w-10 place-items-center rounded-xl bg-brand-blue/15 text-brand-blue">
+                            <svg class="icon !h-5 !w-5" viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M5 20V10M12 20V4M19 20v-7"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navegação entre meses -->
+                <div class="mb-3 flex items-center justify-between rounded-2xl border border-white/10 bg-app-850 p-2">
+                    <button onclick="changeReportMonth(-1)"
+                        class="grid h-10 w-10 place-items-center rounded-xl bg-white/5 text-white transition hover:bg-white/10 active:scale-95"
+                        aria-label="Mês anterior"><i data-lucide="chevron-left" class="h-5 w-5"
+                            aria-hidden="true"></i></button>
+
+                    <div class="text-center">
+                        <p id="reportMonthShort" class="text-sm font-extrabold">10/2026</p>
+                        <p id="reportMonthCount" class="text-[10px] text-slate-500">0 atendimentos</p>
+                    </div>
+
+                    <button onclick="changeReportMonth(1)"
+                        class="grid h-10 w-10 place-items-center rounded-xl bg-white/5 text-white transition hover:bg-white/10 active:scale-95"
+                        aria-label="Próximo mês">
+                        <svg class="icon !h-5 !w-5" viewBox="0 0 24 24">
+                            <path d="m9 18 6-6-6-6"></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Faturamento principal -->
+                <div class="rounded-3xl bg-white p-5 text-black shadow-xl">
+                    <div class="flex items-start justify-between gap-3">
+                        <div>
+                            <p class="text-[10px] font-black uppercase tracking-[.16em] text-black/50">Total feito no
+                                mês</p>
+                            <p id="reportTotal" class="mt-2 text-4xl font-black tracking-tight">R$ 0,00</p>
+                        </div>
+                        <div class="rounded-xl bg-black px-3 py-2 text-xs font-black text-white">
+                            <span id="reportMonthPercent">0%</span>
+                        </div>
+                    </div>
+                    <div class="mt-4 h-2 overflow-hidden rounded-full bg-black/10">
+                        <div id="reportMonthBar" class="h-full rounded-full bg-brand-blue transition-all"
+                            style="width:0%"></div>
+                    </div>
+                    <p id="reportMonthGoal" class="mt-2 text-[10px] font-semibold text-black/50">Meta diária
+                        configurada: R$ 300,00</p>
+                </div>
+
+                <!-- Visão geral do mês -->
+                <div class="mt-3 grid grid-cols-2 gap-2">
+                    <div class="rounded-2xl border border-white/10 bg-app-850 p-4">
+                        <p class="text-[9px] font-black uppercase tracking-wider text-slate-500">Total do mês</p>
+                        <p id="reportMonthTotalBox" class="mt-1 text-2xl font-black text-white">R$ 0,00</p>
+                        <p id="reportMonthDaysText" class="mt-1 text-[10px] text-slate-500">0 dias trabalhados</p>
+                    </div>
+
+                    <div class="rounded-2xl border border-white/10 bg-app-850 p-4">
+                        <p class="text-[9px] font-black uppercase tracking-wider text-slate-500">Média por dia</p>
+                        <p id="reportMonthDailyBox" class="mt-1 text-2xl font-black text-white">R$ 0,00</p>
+                        <p class="mt-1 text-[10px] text-slate-500">baseada nos dias registrados</p>
+                    </div>
+                </div>
+
+                <!-- Indicadores -->
+                <div class="mt-3 grid grid-cols-2 gap-2">
+                    <div class="rounded-2xl border border-white/10 bg-app-850 p-4">
+                        <div class="flex items-center gap-2 text-brand-green">
+                            <svg class="icon !h-4 !w-4" viewBox="0 0 24 24">
+                                <path d="M5 20V10M12 20V4M19 20v-7"></path>
+                            </svg>
+                            <span class="text-[9px] font-black uppercase tracking-wider">Atendimentos</span>
+                        </div>
+                        <p id="reportCount" class="mt-2 text-2xl font-black">0</p>
+                    </div>
+
+                    <div class="rounded-2xl border border-white/10 bg-app-850 p-4">
+                        <div class="flex items-center gap-2 text-brand-amber">
+                            <svg class="icon !h-4 !w-4" viewBox="0 0 24 24">
+                                <path d="M12 3v18M17 7c0-2-2-3-5-3S7 5 7 7s2 3 5 3 5 1 5 3-2 3-5 3-5-1-5-3"></path>
+                            </svg>
+                            <span class="text-[9px] font-black uppercase tracking-wider">Ticket médio</span>
+                        </div>
+                        <p id="reportAverage" class="mt-2 text-2xl font-black">R$ 0</p>
+                    </div>
+
+                    <div class="rounded-2xl border border-white/10 bg-app-850 p-4">
+                        <div class="flex items-center gap-2 text-brand-blue">
+                            <svg class="icon !h-4 !w-4" viewBox="0 0 24 24">
+                                <rect x="3" y="4" width="18" height="17" rx="2"></rect>
+                                <path d="M8 2v4M16 2v4M3 9h18"></path>
+                            </svg>
+                            <span class="text-[9px] font-black uppercase tracking-wider">Dias trabalhados</span>
+                        </div>
+                        <p id="reportDays" class="mt-2 text-2xl font-black">0</p>
+                    </div>
+
+                    <div class="rounded-2xl border border-white/10 bg-app-850 p-4">
+                        <div class="flex items-center gap-2 text-brand-purple">
+                            <svg class="icon !h-4 !w-4" viewBox="0 0 24 24">
+                                <path d="M4 19V5M4 19h16"></path>
+                                <path d="m7 15 4-4 3 2 5-6"></path>
+                            </svg>
+                            <span class="text-[9px] font-black uppercase tracking-wider">Média por dia</span>
+                        </div>
+                        <p id="reportDailyAverage" class="mt-2 text-2xl font-black">R$ 0</p>
+                    </div>
+                </div>
+
+                <!-- Serviços do mês -->
+                <div class="mt-3 rounded-2xl border border-white/10 bg-app-850 p-4">
+                    <div class="mb-4 flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-black">Serviços do mês</p>
+                            <p class="text-[10px] text-slate-500">O que mais está gerando faturamento</p>
+                        </div>
+                    </div>
+                    <div id="reportServices" class="space-y-3"></div>
+                </div>
+
+                <!-- Últimos dias do mês -->
+                <div class="mt-3 rounded-2xl border border-white/10 bg-app-850 p-4">
+                    <div class="mb-4">
+                        <p class="text-sm font-black">Faturamento por dia</p>
+                        <p class="text-[10px] text-slate-500">Últimos 7 dias com registro neste mês</p>
+                    </div>
+                    <div id="reportDailyChart" class="space-y-3"></div>
+                </div>
+            </section>
+
+            <!-- MENU FIXO INFERIOR -->
+            <nav
+                class="fixed bottom-0 left-1/2 z-30 flex w-full max-w-md -translate-x-1/2 border-t border-white/10 bg-app-900/95 px-3 py-2 backdrop-blur-xl">
+
+                <button onclick="showView('home')" data-nav="home"
+                    class="nav-btn flex flex-1 flex-col items-center gap-1 rounded-xl py-2 text-brand-blue">
+                    <svg class="icon !h-5 !w-5" viewBox="0 0 24 24">
+                        <circle cx="6" cy="7" r="3"></circle>
+                        <circle cx="6" cy="17" r="3"></circle>
+                        <path d="M8.5 8.5 20 20M8.5 15.5 20 4"></path>
+                    </svg>
+                    <span class="text-[10px] font-bold">Registrar</span>
+                </button>
+
+                <button onclick="showView('history')" data-nav="history"
+                    class="nav-btn flex flex-1 flex-col items-center gap-1 rounded-xl py-2 text-slate-500">
+                    <svg class="icon !h-5 !w-5" viewBox="0 0 24 24">
+                        <path d="M6 4h12v16H6z"></path>
+                        <path d="M9 8h6M9 12h6M9 16h4"></path>
+                    </svg>
+                    <span class="text-[10px] font-bold">Histórico</span>
+                </button>
+
+                <button onclick="showView('report')" data-nav="report"
+                    class="nav-btn flex flex-1 flex-col items-center gap-1 rounded-xl py-2 text-slate-500">
+                    <svg class="icon !h-5 !w-5" viewBox="0 0 24 24">
+                        <path d="M5 20V10M12 20V4M19 20v-7"></path>
+                    </svg>
+                    <span class="text-[10px] font-bold">Financeiro</span>
+                </button>
+            </nav>
+        </main>
+    </div>
+
+    <!-- MODAL PERSONALIZADO -->
+    <div id="customModal"
+        class="modal-bg fixed inset-0 z-50 hidden items-end justify-center bg-black/70 p-3 backdrop-blur-sm sm:items-center">
+
+        <div class="modal-box w-full max-w-md rounded-3xl border border-white/10 bg-app-850 p-5">
+
+            <div class="mb-5 flex items-center justify-between">
+                <div>
+                    <h3 class="text-xl font-bold">Valor personalizado</h3>
+                    <p class="text-xs text-slate-500">Ex.: hidratação, pigmentação, etc.</p>
+                </div>
+
+                <button onclick="closeCustomModal()" class="h-9 w-9 rounded-xl bg-slate-800 text-slate-300"><i
+                        data-lucide="x" class="h-5 w-5" aria-hidden="true"></i></button>
+            </div>
+
+            <input id="customValue" type="number" inputmode="decimal" min="0" step="0.01" placeholder="R$ 0,00"
+                class="w-full rounded-2xl border border-blue-500/10 bg-app-900 px-4 py-4 text-2xl font-black outline-none focus:border-brand-blue" />
+
+            <input id="customName" type="text" placeholder="Nome do serviço (opcional)"
+                class="mt-3 w-full rounded-2xl border border-blue-500/10 bg-app-900 px-4 py-3 text-sm outline-none focus:border-brand-blue" />
+
+            <button onclick="registerCustom()"
+                class="mt-4 w-full rounded-2xl bg-brand-blue py-4 font-black text-white transition hover:bg-brand-blue/90 active:scale-[.98]">
+                ✓ Registrar
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL SETTINGS -->
+    <div id="settingsModal"
+        class="modal-bg fixed inset-0 z-50 hidden items-end justify-center bg-black/70 p-3 backdrop-blur-sm sm:items-center">
+
+        <div
+            class="modal-box max-h-[90vh] w-full max-w-md overflow-y-auto rounded-3xl border border-white/10 bg-app-850 p-5">
+
+            <div class="mb-5 flex items-center justify-between">
+                <div>
+                    <h3 class="text-xl font-bold">Configurações</h3>
+                    <p class="text-xs text-slate-500">Preços e meta diária.</p>
+                </div>
+
+                <button onclick="closeSettings()"
+                    class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-slate-800 text-slate-300">
+                    <i data-lucide="x" class="h-5 w-5" aria-hidden="true"></i>
+                </button>
+            </div>
+
+            <div id="settingsServices" class="space-y-3"></div>
+
+            <label class="mt-5 block">
+                <span class="text-xs font-semibold text-slate-400">Meta diária</span>
+
+                <input id="goalInput" type="number" min="0" step="1"
+                    class="mt-2 w-full rounded-2xl border border-blue-500/10 bg-app-900 px-4 py-3 outline-none focus:border-brand-blue" />
+            </label>
+
+            <button onclick="saveSettings()"
+                class="mt-5 w-full rounded-2xl bg-brand-blue py-4 font-black text-white hover:bg-brand-blue/90">
+                Salvar configurações
+            </button>
+        </div>
+    </div>
+
+    <!-- TOAST -->
+    <div id="toastContainer"
+        class="pointer-events-none fixed bottom-24 left-1/2 z-[60] w-[calc(100%-32px)] max-w-sm -translate-x-1/2"></div>
+
+    <script>
+        refreshIcons();
+
+        // ============================================================
+        // DADOS
+        // ============================================================
+        const DEFAULT_SERVICES = [
+            { id: 'corte', name: 'Corte', price: 20, icon: '✂', color: 'bg-brand-blue', iconBg: 'bg-brand-blue' },
+            { id: 'barba', name: 'Barba', price: 15, icon: 'beard', color: 'bg-brand-green', iconBg: 'bg-brand-green' },
+            { id: 'corteBarba', name: 'Corte + Barba', price: 30, icon: 'scissors-beard', color: 'bg-brand-purple', iconBg: 'bg-brand-purple' },
+            { id: 'sobrancelha', name: 'Sobrancelha', price: 10, icon: 'eyebrow', color: 'bg-brand-amber', iconBg: 'bg-brand-amber' }
+        ];
+
+        const STORAGE_KEY = 'barbearia_controle_v1';
+
+        const nowForReport = new Date();
+        let reportYear = nowForReport.getFullYear();
+        let reportMonth = nowForReport.getMonth();
+
+        let state = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null') || {
+            services: DEFAULT_SERVICES,
+            goal: 300,
+            records: []
+        };
+
+        state.services = state.services || DEFAULT_SERVICES;
+        state.goal = Number(state.goal || 300);
+        state.records = Array.isArray(state.records) ? state.records : [];
+
+        function save() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        }
+
+        function brl(value) {
+            return Number(value || 0).toLocaleString('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            });
+        }
+
+        function todayKey() {
+            const d = new Date();
+            const y = d.getFullYear();
+            const m = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            return `${y}-${m}-${day}`;
+        }
+
+        function todayRecords() {
+            return state.records.filter(r => r.date === todayKey());
+        }
+
+        function todayTotal() {
+            return todayRecords().reduce((sum, r) => sum + Number(r.price), 0);
+        }
+
+        function register(service) {
+            state.records.push({
+                id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
+                date: todayKey(),
+                time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+                serviceId: service.id,
+                name: service.name,
+                price: Number(service.price)
+            });
+
+            save();
+            render();
+            toast(`${service.name} registrado • ${brl(service.price)}`);
+        }
+
+        function registerCustom() {
+            const value = Number(document.getElementById('customValue').value);
+            const customName = document.getElementById('customName').value.trim();
+
+            if (!value || value <= 0) {
+                toast('Digite um valor válido.', true);
+                return;
+            }
+
+            register({
+                id: 'custom',
+                name: customName || 'Personalizado',
+                price: value
+            });
+
+            document.getElementById('customValue').value = '';
+            document.getElementById('customName').value = '';
+            closeCustomModal();
+        }
+
+        // ============================================================
+        // RENDER
+        // ============================================================
+        function renderServices() {
+            state.services.forEach(s => {
+                const priceEl = document.getElementById('frontPrice' + s.id.charAt(0).toUpperCase() + s.id.slice(1));
+                if (priceEl) priceEl.textContent = brl(s.price);
+            });
+        }
+
+        function registerById(id) {
+            const service = state.services.find(s => s.id === id);
+            if (service) register(service);
+        }
+
+        function renderDashboard() {
+            const records = todayRecords();
+            const total = todayTotal();
+            const count = records.length;
+            const percentage = state.goal > 0 ? Math.min((total / state.goal) * 100, 100) : 0;
+            const average = count ? total / count : 0;
+
+            document.getElementById('todayTotal').textContent = brl(total);
+            document.getElementById('todayCount').textContent = count;
+            document.getElementById('progressBar').style.width = `${percentage}%`;
+            document.getElementById('goalLabel').textContent =
+                `Meta diária: ${brl(state.goal)} • ${Math.round(percentage)}% atingida`;
+
+            document.getElementById('statCuts').textContent = count;
+            document.getElementById('statAverage').textContent = brl(average).replace(',00', '');
+            document.getElementById('statGoal').textContent = `${Math.round(percentage)}%`;
+
+            const todayLabel = document.getElementById('todayLabel');
+            if (todayLabel) {
+                todayLabel.textContent = new Date().toLocaleDateString('pt-BR', {
+                    weekday: 'long', day: '2-digit', month: 'long'
+                });
+            }
+        }
+
+        function renderHistory() {
+            const list = document.getElementById('historyList');
+            const records = todayRecords().slice().reverse();
+            const total = records.reduce((sum, r) => sum + Number(r.price), 0);
+
+            document.getElementById('historyTotal').textContent = brl(total);
+
+            if (!records.length) {
+                list.innerHTML = `
+        <div class="rounded-2xl bg-app-850 p-8 text-center">
+          <svg class="icon mx-auto !h-8 !w-8 text-slate-400" viewBox="0 0 24 24"><path d="M6 4h12v16H6z"></path><path d="M9 8h6M9 12h6M9 16h4"></path></svg>
+          <p class="mt-2 font-bold">Nenhum atendimento hoje</p>
+          <p class="mt-1 text-xs text-slate-500">Toque em um serviço para registrar.</p>
+        </div>`;
+                return;
+            }
+
+            list.innerHTML = records.map((r, index) => `
+      <div class="flex items-center gap-3 rounded-2xl bg-app-850 p-3">
+        <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${getServiceColor(r.serviceId)} text-lg">
+          ${getServiceIconMarkup(r.serviceId)}
+        </div>
+        <div class="min-w-0 flex-1">
+          <p class="truncate text-sm font-bold">${escapeHtml(r.name)}</p>
+          <p class="text-[11px] text-slate-500">${r.time}</p>
+        </div>
+        <strong class="text-sm">${brl(r.price)}</strong>
+        <button onclick="deleteRecord('${r.id}')" class="ml-1 text-slate-600 hover:text-red-400" title="Excluir"><i data-lucide="x" class="h-5 w-5" aria-hidden="true"></i></button>
+      </div>
+    `).join('');
+        }
+
+        function getReportMonthKey() {
+            return `${reportYear}-${String(reportMonth + 1).padStart(2, '0')}`;
+        }
+
+        function getReportMonthRecords() {
+            const key = getReportMonthKey();
+            return state.records.filter(r => String(r.date).slice(0, 7) === key);
+        }
+
+        function changeReportMonth(delta) {
+            reportMonth += delta;
+
+            if (reportMonth < 0) {
+                reportMonth = 11;
+                reportYear--;
+            }
+
+            if (reportMonth > 11) {
+                reportMonth = 0;
+                reportYear++;
+            }
+
+            renderReport();
+        }
+
+        function renderReport() {
+            const records = getReportMonthRecords();
+            const total = records.reduce((sum, r) => sum + Number(r.price), 0);
+            const count = records.length;
+            const average = count ? total / count : 0;
+
+            const days = new Set(records.map(r => r.date)).size;
+            const dailyAverage = days ? total / days : 0;
+
+            const monthName = new Date(reportYear, reportMonth, 1)
+                .toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+
+            const monthShort = `${String(reportMonth + 1).padStart(2, '0')}/${reportYear}`;
+
+            document.getElementById('reportMonthLabel').textContent =
+                monthName.charAt(0).toUpperCase() + monthName.slice(1);
+
+            document.getElementById('reportMonthShort').textContent = monthShort;
+            document.getElementById('reportMonthCount').textContent =
+                `${count} ${count === 1 ? 'atendimento' : 'atendimentos'}`;
+
+            document.getElementById('reportTotal').textContent = brl(total);
+            document.getElementById('reportMonthTotalBox').textContent = brl(total);
+            document.getElementById('reportMonthDaysText').textContent =
+                `${days} ${days === 1 ? 'dia trabalhado' : 'dias trabalhados'}`;
+            document.getElementById('reportMonthDailyBox').textContent =
+                brl(dailyAverage).replace(',00', '');
+
+            document.getElementById('reportCount').textContent = count;
+            document.getElementById('reportAverage').textContent = brl(average).replace(',00', '');
+            document.getElementById('reportDays').textContent = days;
+            document.getElementById('reportDailyAverage').textContent =
+                brl(dailyAverage).replace(',00', '');
+
+            // Percentual apenas como referência em relação à meta diária x dias trabalhados.
+            // Não cria uma meta mensal fixa; usa os dias que já tiveram atendimento.
+            const monthReference = state.goal * Math.max(days, 1);
+            const percentage = monthReference > 0
+                ? Math.min((total / monthReference) * 100, 100)
+                : 0;
+
+            document.getElementById('reportMonthPercent').textContent =
+                `${Math.round(percentage)}%`;
+
+            document.getElementById('reportMonthBar').style.width = `${percentage}%`;
+            document.getElementById('reportMonthGoal').textContent =
+                `Referência: ${brl(state.goal)} por dia × ${days || 0} dia(s) com atendimento`;
+
+            // Serviços
+            const grouped = {};
+            const revenueByService = {};
+
+            records.forEach(r => {
+                grouped[r.name] = (grouped[r.name] || 0) + 1;
+                revenueByService[r.name] = (revenueByService[r.name] || 0) + Number(r.price);
+            });
+
+            const entries = Object.entries(grouped)
+                .sort((a, b) => (revenueByService[b[0]] - revenueByService[a[0]]));
+
+            const maxRevenue = entries.length
+                ? Math.max(...entries.map(([name]) => revenueByService[name]))
+                : 0;
+
+            document.getElementById('reportServices').innerHTML = entries.length
+                ? entries.map(([name, qty]) => {
+                    const revenue = revenueByService[name];
+                    const width = maxRevenue ? (revenue / maxRevenue) * 100 : 0;
+
+                    return `
+                        <div>
+                            <div class="mb-1 flex items-center justify-between gap-3 text-xs">
+                                <span class="min-w-0 truncate font-semibold text-slate-300">${escapeHtml(name)}</span>
+                                <span class="shrink-0 font-black">${brl(revenue)}</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <div class="h-2 flex-1 overflow-hidden rounded-full bg-slate-800">
+                                    <div class="h-full rounded-full bg-brand-blue transition-all" style="width:${width}%"></div>
+                                </div>
+                                <span class="w-14 text-right text-[9px] text-slate-500">
+                                    ${qty}x
+                                </span>
+                            </div>
+                        </div>`;
+                }).join('')
+                : '<div class="rounded-xl bg-white/5 p-4 text-center text-xs text-slate-500">Ainda não há registros neste mês.</div>';
+
+            // Últimos 7 dias que possuem registro no mês.
+            const daily = {};
+            records.forEach(r => {
+                daily[r.date] = (daily[r.date] || 0) + Number(r.price);
+            });
+
+            const dailyEntries = Object.entries(daily)
+                .sort((a, b) => a[0].localeCompare(b[0]))
+                .slice(-7);
+
+            const maxDaily = dailyEntries.length
+                ? Math.max(...dailyEntries.map(([, value]) => value))
+                : 0;
+
+            document.getElementById('reportDailyChart').innerHTML = dailyEntries.length
+                ? dailyEntries.map(([date, value]) => {
+                    const [year, month, day] = date.split('-').map(Number);
+                    const label = new Date(year, month - 1, day)
+                        .toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+                    const width = maxDaily ? (value / maxDaily) * 100 : 0;
+
+                    return `
+                        <div class="flex items-center gap-3">
+                            <span class="w-10 shrink-0 text-[10px] font-bold text-slate-500">${label}</span>
+                            <div class="h-2 flex-1 overflow-hidden rounded-full bg-slate-800">
+                                <div class="h-full rounded-full bg-brand-green transition-all" style="width:${width}%"></div>
+                            </div>
+                            <strong class="w-20 shrink-0 text-right text-[11px]">${brl(value)}</strong>
+                        </div>`;
+                }).join('')
+                : '<div class="rounded-xl bg-white/5 p-4 text-center text-xs text-slate-500">Registre atendimentos para acompanhar o faturamento diário.</div>';
+        }
+
+        function renderSettings() {
+            document.getElementById('settingsServices').innerHTML = state.services.map(s => `
+      <label class="block rounded-2xl bg-app-900 p-3">
+        <span class="text-sm font-bold">${escapeHtml(s.name)}</span>
+        <div class="mt-2 flex items-center rounded-xl bg-app-850">
+          <span class="pl-3 text-slate-500">R$</span>
+          <input data-service-price="${s.id}" type="number" min="0" step="0.01"
+            value="${Number(s.price).toFixed(2)}"
+            class="w-full bg-transparent px-2 py-3 outline-none" />
+        </div>
+      </label>
+    `).join('');
+
+            document.getElementById('goalInput').value = state.goal;
+        }
+
+        function refreshIcons() {
+            if (window.lucide) {
+                lucide.createIcons({
+                    attrs: {
+                        'stroke-width': 2,
+                        'stroke-linecap': 'round',
+                        'stroke-linejoin': 'round'
+                    }
+                });
+            }
+        }
+
+        function render() {
+            renderServices();
+            renderDashboard();
+            renderHistory();
+            renderReport();
+            renderSettings();
+        }
+
+        // ============================================================
+        // NAVEGAÇÃO
+        // ============================================================
+        function showView(view) {
+            const views = {
+                home: document.getElementById('homeView'),
+                history: document.getElementById('historyView'),
+                report: document.getElementById('reportView')
+            };
+
+            Object.values(views).forEach(v => v.classList.add('hidden'));
+            views[view].classList.remove('hidden');
+
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('text-brand-blue');
+                btn.classList.add('text-slate-500');
+            });
+
+            const activeNav = document.querySelector(`[data-nav="${view}"]`);
+            if (activeNav) {
+                activeNav.classList.remove('text-slate-500');
+                activeNav.classList.add('text-brand-blue');
+            }
+        }
+
+        // ============================================================
+        // CONFIGURAÇÕES
+        // ============================================================
+        function openSettings() {
+            renderSettings();
+            document.getElementById('settingsModal').classList.remove('hidden');
+            document.getElementById('settingsModal').classList.add('flex');
+        }
+
+        function closeSettings() {
+            document.getElementById('settingsModal').classList.add('hidden');
+            document.getElementById('settingsModal').classList.remove('flex');
+        }
+
+        function saveSettings() {
+            document.querySelectorAll('[data-service-price]').forEach(input => {
+                const service = state.services.find(s => s.id === input.dataset.servicePrice);
+                if (service) service.price = Number(input.value) || 0;
+            });
+
+            state.goal = Number(document.getElementById('goalInput').value) || 0;
+            save();
+            render();
+            closeSettings();
+            toast('Configurações salvas.');
+        }
+
+        // ============================================================
+        // HISTÓRICO
+        // ============================================================
+        function deleteRecord(id) {
+            const record = state.records.find(r => r.id === id);
+            if (!record) return;
+
+            if (!confirm(`Excluir "${record.name}" de ${brl(record.price)}?`)) return;
+
+            state.records = state.records.filter(r => r.id !== id);
+            save();
+            render();
+            toast('Registro excluído.');
+        }
+
+        function clearToday() {
+            const count = todayRecords().length;
+            if (!count) return;
+
+            if (!confirm(`Apagar os ${count} registros de hoje?`)) return;
+
+            state.records = state.records.filter(r => r.date !== todayKey());
+            save();
+            render();
+            toast('Histórico de hoje limpo.');
+        }
+
+        // ============================================================
+        // MODAIS
+        // ============================================================
+        function openCustomModal() {
+            const modal = document.getElementById('customModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            setTimeout(() => document.getElementById('customValue').focus(), 50);
+        }
+
+        function closeCustomModal() {
+            const modal = document.getElementById('customModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        document.getElementById('customModal').addEventListener('click', e => {
+            if (e.target.id === 'customModal') closeCustomModal();
+        });
+
+        document.getElementById('settingsModal').addEventListener('click', e => {
+            if (e.target.id === 'settingsModal') closeSettings();
+        });
+
+        // ============================================================
+        // HELPERS
+        // ============================================================
+        // Usa os mesmos PNGs dos serviços principais no histórico.
+        // Corte = 1.png | Barba = 2.png | Sobrancelha = 3.png | Corte + Barba = 4.png
+        function getServiceIconFile(id) {
+            const iconFiles = {
+                corte: '1.png',
+                barba: '2.png',
+                sobrancelha: '3.png',
+                corteBarba: '4.png'
+            };
+            return iconFiles[id] || null;
+        }
+
+        function getServiceIconMarkup(id) {
+            const file = getServiceIconFile(id);
+
+            if (file) {
+                return `<img src="./img/${file}" alt="" class="h-7 w-7 object-contain">`;
+            }
+
+            return '<span class="text-lg">💵</span>';
+        }
+
+        function getServiceIcon(id) {
+            const service = state.services.find(s => s.id === id);
+            return service?.icon || '💵';
+        }
+
+        function getServiceColor(id) {
+            const service = state.services.find(s => s.id === id);
+            return service?.color || 'bg-slate-700';
+        }
+
+        function escapeHtml(str) {
+            return String(str).replace(/[&<>"']/g, c => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'
+            }[c]));
+        }
+
+        function toast(message, error = false) {
+            const container = document.getElementById('toastContainer');
+            const el = document.createElement('div');
+
+            el.className = `toast mb-2 rounded-2xl px-4 py-3 text-sm font-bold shadow-2xl ${error ? 'bg-red-500 text-white' : 'bg-white text-black'
+                }`;
+
+            el.textContent = message;
+            container.appendChild(el);
+            setTimeout(() => el.remove(), 2300);
+        }
+
+        // Fecha o teclado/modal com ESC
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') {
+                closeCustomModal();
+                closeSettings();
+            }
+
+            if (e.key === 'Enter' && !document.getElementById('customModal').classList.contains('hidden')) {
+                registerCustom();
+            }
+        });
+
+        // Inicialização
+        render();
+    </script>
+</body>
+
+</html>
